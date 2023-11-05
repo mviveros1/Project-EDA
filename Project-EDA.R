@@ -23,7 +23,7 @@ file_path <- "C:/Users/mv014/OneDrive - State Center Community College Distrct/D
 
 #  Get data and store data frames (Item 2-Read in your data)
 
-## We’ll be using eye-data on students as they preform different desktop activities, available on Kaggle. The dataset comprises raw gaze coordinates (x-y) and timestamp data collected from 24 participants who were engaged in eight distinct desktop activities: Read, Browse, Play, Search, Watch, Write, Debug, and Interpret.
+## We’ll be using eye-data on students as they preform different desktop activities, available on Kaggle. There are 192 files so we will need to combine into one big data frame first. The dataset comprises raw gaze coordinates (x-y) and timestamp data collected from 24 participants who were engaged in eight distinct desktop activities: Read, Browse, Play, Search, Watch, Write, Debug, and Interpret.
 
 ## *To get the download URL:https://www.kaggle.com/datasets/namratasri01/eye-movement-data-set-for-desktop-activities.*
 
