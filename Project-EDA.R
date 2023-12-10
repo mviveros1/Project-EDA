@@ -19,7 +19,9 @@ suppressPackageStartupMessages({
 
 ## This isn’t very precise, but that’s okay: Part of the goal of this EDA is to clarify eye-metrics that contribute to understanding of visual perception.
 
-file_path <- "C:/Users/mv014/OneDrive - State Center Community College Distrct/Desktop/desktop/2022 Requests/UCM/R training/UcmFALL 2023/R2023/Final Project/desktopactivities all.xlsx"
+# file_path <- "C:/Users/mv014/OneDrive - State Center Community College Distrct/Desktop/desktop/2022 Requests/UCM/R training/UcmFALL 2023/R2023/Final Project/desktopactivities all.xlsx"
+
+#IS# file_path <- "F:/Fall 23 Works/Methods of Data Science/Project-EDA-main/Project-EDA-main/data/desktopactivities all.xlsx"
 
 #  Get data and store data frames (Item 2-Read in your data)
 
@@ -139,6 +141,7 @@ combined_data %>%
 # Create scatter plot with x, y, and timestamp-(Item 7-Make a plot)
 
 # Sample data creation
+#IS# Good call-back to seed.
 set.seed(123) # for reproducibility
 n_points <- 100 # Number of data points per participant
 n_participants <- 24
@@ -175,7 +178,8 @@ data <- tibble(
   timestamp = runif(n_points * n_participants, min = 0, max = 399184),
   activity = rep(c("WRITE", "WATCH", "SEARCH", "READ", "PLAY", "INTERPRET", "DEBUG", "BROWSE", "READ"), each = n_points, length.out = n_points * n_participants)
 )
-
+ 
+#IS# Slightly too many variables, maybe start here, but bring variables down to smaller sub-sets.
 # Create scatter plot with x, y, and timestamp
 ggplot(data, aes(x = x, y = y, color = participant)) +
   geom_point() +
@@ -186,10 +190,11 @@ ggplot(data, aes(x = x, y = y, color = participant)) +
 
 
 ## The preliminary results show, the first fixation across desktop actiivites is different but most participants look in the same area.
-
+#IS# Spelling errors on final product "aciivities" => "activities"
 ## Discussion.The resulting graph effectively demonstrates the relationships between the 'activity' and 'participant' variables. It plots the participants on the x-axis and utilizes facets to categorize the data points based on different activities. This facet arrangement allows for a clear comparison of the gaze patterns among the participants for each specific activity.Through this visual representation, we can observe distinct variations in the participants' gaze patterns across different activities. The clear differentiation in the plotted data points suggests potential differences in how participants engage with various activities, providing valuable insights into their cognitive processes and task engagement strategies during the experiment or study.
 
 # Sample data creation
+#IS# better separation of sub-sections, you've changed 'n-point' values, from 1k to 2k, explain what we may be looking at now, or why the change in n-values.
 set.seed(123) # for reproducibility
 n_points <- 2000 # Number of data points per participant
 n_participants <- 24
@@ -217,4 +222,12 @@ ggplot(first_fixations, aes(x = x, y = y, color = participant)) +
   theme_minimal() +
   facet_wrap(~ activity)
 
-
+##############################################################################
+#IS#
+ Maribel, your code is very good and flows very well, after one minor set-up in file_path, everything works post that point.
+ One place where you could do better is expanding on your explanations of subpoints. and perhaps expand on what each variable does.
+ Someone with no familiarity in your work could use pointers in an added "readme" file, eg. what values of interest you're looking for, what each subsection of code expands on
+ and so on.
+My scrutiny of your code, per the code review we did in class, most of my commentary falls in the "well done" category.
+You don't add an html file in your github repository, but your word document makes up for it for the purposes of this scrutiny.
+ One final thing, your xlsx file was set to open through Mozilla firefox, I had to do some minor tweaking to have it actually open with Excel, through "advanced options" in the "data" folder.
