@@ -28,15 +28,15 @@ suppressPackageStartupMessages({
 ## Introduction
 
 
-By analyzing gaze data from 24 participants engaged in eight desktop activities, including time to first fixation (attention) and first fixation duration (initial object impression), this research will enrich our understanding of visual perception. 
+By analyzing an existing gaze data set collected from 24 participants engaged in eight distinct desktop activities this research will contribute to our understanding of visual perception.This project aims to assess first fixation metrics for recognizing desktop activities. The first fixation, represents the immediate processing of the attended stimulus and serves as a measure of attention.
 
-We’re specifically interested in: Can the application of first fixation metrics contribute to desktop activity recognition? 
+The proposed research is specifically concerned with: Can the application of first fixation metrics (a common eye-tracking measure) contribute to desktop activity recognition? 
 
-Srivastava, N., Newn, J., and Velloso, E. (2018) conducted a study with the aim of recognizing sedentary activities characterized by minimal physical movements using eye-movements. The purpose was to build upon existing work demonstrating the use of eye tracking as a promising modality for activity recognition. the study highlighted the ongoing challenge in the research community to achieve finer-grained activity recognition across a wide range of desktop-based activities using more precise eye-measures. Srivstava and colleagues hoped their findings would support the “design of computing systems that can proactively monitor daily activities and can either assist users with their daily tasks or encourage them to follow a healthy lifestyle.” In contrast to previous work centered on using eye movements for traditional human activity recognition, their study was oriented toward devising a methodology for distinguishing desktop activities. They constructed a classifier that combined 26 low-level gaze features from existing literature with 24 novel mid-level gaze features. The researchers applied their approach to a dataset encompassing 24 participants engaged in eight distinct desktop computing activities. The results supported the integration of the Srivastava and colleagues’ proposed mid-level gaze features, revealing enhanced overall performance in activity recognition. The values crystallized in the data is the recognition of human activities through eye movements. These values are related to desktop activity recognition and context-aware systems and consist of high, low and mid-level gaze features and timestamps in the dataset. The data aimed to reveal the relationship and uncover the connection between eye movements and specific desktop-based activities. This understanding of human activities is valuable in several domains, including surveillance, healthcare, and education. The data contributes to the development of context-aware interactive systems. By understanding the context of users' activities, systems can provide more personalized and helpful support. This aligns with the researchers’ view that this finding has the potential to enhance users' daily tasks and encourage healthy lifestyles. The power relations and values influencing data inclusion and exclusion are the participant selection, the variety of eye behaviors, and the focus on reducing misclassification. The sensitivity to time windows also reflects the power researchers have in choosing data processing techniques. Ultimately, the study's objective is to simplify activity recognition by leveraging intuitive knowledge of eye movements and patterns.
+The dataset is derived from Srivastava, N., Newn, J., and Velloso, E.'s (2018) study, where the goal was to identify sedentary activities with minimal physical movements using eye movements. This study aimed to extend previous research showcasing the potential of eye tracking as a promising method for activity recognition. The study highlighted the ongoing challenge in the research community to achieve finer-grained activity recognition across a wide range of desktop-based activities using more precise eye-measures. Srivstava and colleagues (2018) hoped their findings would support the “design of computing systems that can proactively monitor daily activities and can either assist users with their daily tasks or encourage them to follow a healthy lifestyle.” In contrast to previous work centered on using eye movements for traditional human activity recognition, their study was oriented toward devising a methodology for distinguishing desktop activities. They constructed a classifier that combined 26 low-level gaze features from existing literature with 24 novel mid-level gaze features. The researchers applied their approach to a dataset encompassing 24 participants engaged in eight desktop computing activities. The results supported the integration of the Srivastava and colleagues’ proposed mid-level gaze features, revealing enhanced overall performance in activity recognition. The data aimed to reveal the relationship and uncover the connection between eye movements and specific desktop-based activities. The values crystallized in the data is the recognition of human activities through eye movements. These values are related to desktop activity recognition and context-aware systems and consist of high, low and mid-level gaze features and timestamps in the dataset.  
+  This understanding of human activities is valuable in several domains, including surveillance, healthcare, and education. The data contributes to the development of context-aware interactive systems. By understanding the context of users' activities, systems can provide more personalized and helpful support. Ultimately, their study's objective is to simplify activity recognition by leveraging intuitive knowledge of eye movements and patterns.
 
-*Prior knowledge what did you already know about this topic before starting to work on the project, what did you expect to find, who’s impacted by this topic, and how will your work respect them?*
 
-My research inquiry revolves around the question, to what extent can the incorporation of first fixation metrics and low-level gaze characteristics enhance the recognition of desktop activities? I aim to delve into the intricacies of eye behavior, examining whether initial gaze holds clues regarding the induction of oculomotor behaviors in the context of activity recognition. Given that prior researchers have already identified eye movements that are operationalized into mid-level, low-level, and high-level categories suitable for classification, my study seeks to ascertain which features are most appropriate for this purpose.
+The current research inquiry revolves around the question, to what extent can the incorporation of first fixation metrics enhance the recognition of desktop activities? I aim to delve into the specific eye behaviors, initial gaze, to see how it supports activity recognition. Prior studies have shown that first fixation duration can serve as a measure of visual information acquisition (Holmqvist, et al., 2018). First fixation, or initial gaze, is the amount of time an individual spends fixating their gaze on a specific area of interest during an eye-tracking experiment. Given that prior researchers have already identified eye movements that are operationalized into mid-level, low-level, and high-level categories suitable for classification, my study seeks to ascertain which features are most appropriate for this purpose.
 
 This isn’t very precise, but that’s okay: Part of the goal of this EDA project is to clarify eye-metrics that contribute to understanding of visual perception.
 
@@ -46,17 +46,16 @@ file_path <- "C:/Users/mv014/OneDrive - State Center Community College Distrct/D
 
 ##  Methods
 
-We’ll be using eye-data on students as they preform different desktop activities, available on Kaggle. The dataset comprises raw gaze coordinates (x-y) and timestamp data collected from 24 participants who were engaged in eight distinct desktop activities: Read, Browse, Play, Search, Watch, Write, Debug, and Interpret.
+The study will be using eye-data on students as they preformed different desktop activities, available on Kaggle. The dataset comprises raw gaze coordinates (x-y) and timestamp data collected from 24 participants who were engaged in eight distinct desktop activities: Read, Browse, Play, Search, Watch, Write, Debug, and Interpret.
 
-To get the download URL:https://www.kaggle.com/datasets/namratasri01/eye-movement-data-set-for-desktop-activities. There are 192 individual files, so we need to do some data wrangling and combine them into one dataframe for analysis.
+The dataset is available for download  at the URL:https://www.kaggle.com/datasets/namratasri01/eye-movement-data-set-for-desktop-activities. There are 192 individual files, so I need to do some data wrangling and combine them into one dataframe for analysis.
 
-The original objective  by Srivastava et al. (2018) was to introduce a level of abstraction between low- and high-level gaze features, known as "mid-level gaze features." These mid-level gaze features don't necessitate a understanding of interface design but are based on intuitive knowledge about the types of eye movements associated with different activities. Intuitively, anyone can deduce the nature of a user's activity by examining gaze patterns. For instance, Srivastava and colleagues, cite a study which found reading patterns in Western languages commonly involve short saccades from left to right and long saccades from right to left at line breaks. Researchers leveraged this knowledge to identify fundamental components that typify specific activities within the time series data, Srivastava and colleagues’ hypothesis was that utilizing them as features could enhance classification results.
+The original objective  by Srivastava et al. (2018) was to introduce a level of abstraction between low- and high-level gaze features, known as "mid-level gaze features." These mid-level gaze features don't necessitate a understanding of interface design but are based on intuitive knowledge about the types of eye movements associated with different activities. Intuitively, anyone can deduce the nature of a user's activity by examining gaze patterns. 
 
-In this context, the data collected was mutable and used to capture real-time eye movement data as participants undertook various activities through the Tobii Pro X2-30 eye tracker. Immutability wasn't a primary focus in the research; the emphasis was on utilizing mutable eye movement data for identifying sedentary activities.
+In this context, the data collected by Srivastava et al. (2018) was used to capture real-time eye movement data as participants undertook various activities through the Tobii Pro X2-30 eye tracker. The emphasis was on utilizing  eye movement data for identifying sedentary activities.
 
-Data mutability was created by actively recording and updating eye movement data through the Tobii Pro X2-30 eye tracker and the Tobii Pro Studio software. Researchers could maintain mutability by storing and managing the data in a manner that allowed for easy ongoing modifications and adjustments during the research process ensuring the data remained flexible and adaptable to evolving research needs.
 
-The dataset includes the x and y coordinates and timestamps of students' eye positions as they perform assigned tasks. To enhance the predictive power, I will convert the conditions into numeric characters and merge the datasets of individual participants. This integration will provide more robust predictions. My objective is to not only identify the classifiers of eye metrics commonly used for activity recognition but also determine which ones have better predictive capabilities. Specifically, I will assess the first time to fixation, and the duration of the first fixation to identify which of these factors is most effective for feature classification. 
+The dataset includes the x and y coordinates and timestamps of students' eye positions as they perform assigned tasks. To enhance the predictive power, I will convert the conditions into numeric characters and merge the datasets of individual participants. This integration will provide more robust predictions. My objective is to assess the first time to fixation, and the duration of the first fixation to identify which of these factors is most effective for desktop classification. 
 
 
 ```{r}
@@ -77,7 +76,7 @@ print(combined_data) # Print the combined data
 
 # Results
 
-Peng and Matsui (2016) use some base R functions to look at dimensions of the dataframe and column (variable) types. Here we use the same from the checklist, for the EDA project. So in cheking the packaging the following results were found.
+For the EDA project I will use  base R functions to look at dimensions of the dataframe and column (variable) types outlined by Peng and Matsui (2016). The analysis covers the all the items from the checklist. The following results  below were found.
 
 ```{r}
 skim(combined_data) #3. Check the packaging ~How many rows and columns?    Are there any types that might indicate parsing problems? NO
@@ -85,7 +84,9 @@ skim(combined_data) #3. Check the packaging ~How many rows and columns?    Are t
 
 ## Dataset
 
-Specifically, there are 24 unique participants, 3 unique sets, and 8 unique activities within the dataset.The data includes rows with unique x, y, and timestamp values, with each row identified by the raw_row_number. The variables 'participant', 'set', and ;'activity' serve as identifiers.  Notably, the Participant, Set, and Activity variables do not contain any missing values.Within the dataset, the variables x and y represent the spatial coordinates, while the timestamp indicates the specific time point when the gaze was at the corresponding x, y coordinate. The timestamp is instrumental in representing durations or the "time spent" on a particular activity. It's worth noting that the variables representing activity and set also do not contain any missing values. In total the data set consists of 1505813 rows (observations); 6 columns (variables).The 3 variables are handled as characters, 3 as numeric. 24 participants. There are 3 sets, and 8 activities. For our motivating question: the data set is Good as the eye gaze coordinates and timestamp is 100% complete. Also good, the desktop activity data is also 100% complete. Some potential limitations are the complicated data in x, y and timestamp, dimensions of desktop not clear as we are only provided the desktop monitor size, we presume 1080 resolution.To examine the data set for missing values we can't use 'vis_miss(combined_data)' because of large data which causes and error. So we'll use 'sample_n' to draw a subset. Arguments in vis_miss() are useful for picking up patterns in missing values. Here we see there is no missing data.
+Specifically, the dataset contains information on 24 unique participants, 3 unique trials, and 8 unique activities.The data includes rows with unique x, y, and timestamp values, with each row identified by the raw_row_number. The variables 'participant', 'set', and ;'activity' serve as identifiers.  Notably, the participant, set, and activity variables do not contain any missing values. Within the dataset, the variables x and y represent the spatial coordinates, while the timestamp indicates the specific time point when the gaze was at the corresponding x, y coordinate. The timestamp is instrumental in representing durations or the "time spent" on a particular activity. It's worth noting that the variables representing activity and set also do not contain any missing values. In total the data set consists of 1505813 rows (observations); 6 columns (variables).The 3 variables are handled as characters, 3 as numeric. 
+  For the motivating question, the data set is appropriate as the eye gaze coordinates and timestamp is 100% complete. Also, the desktop activity data is 100% complete. Some potential limitations are the complicated nature of eye-metric data in x, y and timestamp analysis, especially given the lack of dimensions of the desktop used so lets presume a 1080 resolution. Resolution is important to calculate saccades,and important in fixation duration for future studies. 
+  To examine the data set for missing values I can't use 'vis_miss(combined_data)' because of large data which causes a error so 'sample_n' to draw a subset was used. Arguments in vis_miss() are useful for picking up patterns in missing values. As seen below there is no missing data.
 
 ```{r}
 set.seed(123)
@@ -100,6 +101,7 @@ combined_smol = sample_n(combined_data, 1000) #subset of combined data
 ```
 
 ## A Critical Examination
+
 By examining the mean duration of the first timestamp for each activity, we can discern patterns related to the amount of time spent on each specific activity. This can help identify which activities require more prolonged or shorter periods of visual engagement. To answer the following question, Can we identify which activities require more prolonged or shorter periods of visual engagement? 
 
 
@@ -113,9 +115,10 @@ combined_data %>%
             min_y = first(y))
 ```
 
+
 # Data Summary-Check your n's
 
-With  over 1 million rows, the dataframe is too large to print in a readable way. Instead we’ll use the base R function View() in an interactive session. An Excel-like spreadsheet presentation View() can cause significant problems if you use it with a large dataframe on a slower machine, we’ll use a pipe. Overall, this code block is designed to provide an interactive way to examine the top and bottom rows of the combined_data and combined_smol data frames, allowing for easy inspection and understanding of the data structure and contents.
+With  over 1 million rows, the dataframe is too large to print in a readable way. Instead  the base R function View() in an interactive session was used. An Excel-like spreadsheet presentation View() can cause significant problems if you use it with a large dataframe on a slower machine, so I used a pipe. Overall, this code block is designed to provide an interactive way to examine the top and bottom rows of the combined_data and combined_smol data frames, allowing for easy inspection and understanding of the big data structure and contents.
 
 ```{r}
 if (interactive()) {
@@ -131,14 +134,14 @@ if (interactive()) {
 }
 ```
 
-We use skimr to check data quality by looking at the minimum and maximum values. All of the ranges make sense for what we expect the variable to be.
+The skimr to check data quality was applied and examined the minimum and maximum values. All of the ranges make sense for what I expect the variable to be given each of the activities were not to exceed 5-6 minutes.
 
 ```{r}
 skim(combined_data)
 ```
 
 
-Since there is not another duplicate set or typical data set for desktop activities and eye-metric times, we cannot check against n's, as the total expected are in the dataframe. So here we are checking the sample to see if timescale for one activity matches with the dataset. In this example, by downloading the dataset from the kaggle website, you can see the first, 'x' and 'y' coordinates in 'write' activity for participant no.24, assigned in set 'B' match with the sample below. 
+Since there is not another duplicate set or typical data set for desktop activities and eye-metric times, I cannot check against n's, as the total expected are in the dataframe. So here I am checking the sample to see if timescale for one activity matches with the dataset. In this example, by downloading the dataset from the kaggle website, you can see the first, 'x' and 'y' coordinates in 'write' activity for participant no.24, assigned in set 'B' match with the sample below. 
 
 ```{r}
 # Given table
@@ -173,92 +176,135 @@ combined_data %>%
 
 # Plot 
 
+The initial plot illustrates the variability in the average time participants spend observing a stimulus based on different activities. To further investigate, the second graph focuses on assessing the average duration of the first fixation-first glance, which represents the time difference between the first and start of timestamps. This analysis aims to reveal more noticeable distinctions in fixation times across various activities and participants to find if there are noticible differences. 
+  Finally, in the box plot graph, the dots show the individual participant first fixation duration average values for each activity.The code calculates the first fixation duration by determining the time difference between the timestamp of the first fixation and the start time (0). The resulting plot then provides the average duration of the first fixation for each group defined by 'activity' and 'participant'. This information is derived from the computation of the avg_first_fixation_duration. 
+
 ```{r}
-# Sample data creation
-set.seed(123) # for reproducibility
-n_points <- 100 # Number of data points per participant
-n_participants <- 24
 
-# Generate sample data for 24 participants
-data <- tibble(
-  participant = rep(paste0("P", 1:n_participants), each = n_points),
-  x = runif(n_points * n_participants, min = 0, max = 1920), # Adjust max according to your screen resolution resolution of desktop used on 24 inch monitor, detailed in methods
-  y = runif(n_points * n_participants, min = 0, max = 1080), # Adjust max according to your screen resolution, resolution of desktop used on 24 inch monitor
-  timestamp = runif(n_points * n_participants, min = 0, max = 399184) # Random timestamps within the last 30 days
-)
+combined_data %>%
+  filter(!is.na(activity)) %>%
+  arrange(timestamp) %>%
+  group_by(activity, participant) %>%
+  summarise(
+    avg_duration = mean(timestamp - first(timestamp)),
+    min_x = first(x),
+    min_y = first(y)
+  ) %>%
+  ggplot(aes(x = activity, y = avg_duration, fill = activity)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Average Duration Time Across Activities for Each Participant",
+       x = "Activity",
+       y = "Average Duration (ms)",
+       fill = "Activity") +
+  theme_minimal()
 
-# Create scatter plot with x, y, and timestamp
-ggplot(data, aes(x = x, y = y, color = participant)) +
-  geom_point() +
-  labs(title = "Scatter Plot of Eye Gaze Coordinates",
-       x = "X Coordinate", y = "Y Coordinate", color = "Participant") +
+```
+```{r}
+combined_data %>%
+  filter(!is.na(activity)) %>%
+  arrange(participant, activity, timestamp) %>%
+  group_by(activity, participant) %>%
+  summarise(
+    avg_duration = mean(timestamp - first(timestamp)),
+    min_x = first(x),
+    min_y = first(y),
+    avg_first_fixation_duration = mean(c(0, diff(timestamp)))  # Calculate average duration of the first fixation
+  ) %>%
+  ggplot(aes(x = activity, y = avg_first_fixation_duration, fill = activity)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Average Duration of First Fixation Across Activities for Each Participant",
+       x = "Activity",
+       y = "Average Duration of First Fixation (ms)",
+       fill = "Activity") +
   theme_minimal()
 ```
+# A plot that tells us location for each activity.
 
-## A plot that tells us location for each activity.
+To translate the research question: Do all participants stare in relatively the same positions across the activities? The easy solution is to estimate location by plotting the x, or y coordinates since eye-movements are symmetrical, for each participant across the average first fixation time stamp for each activity.Only the row with the minimum timestamp (i.e., the first fixation) is provided below by each activity. The preliminary results show, the first fixation across desktop actiivites is different but most participants look in the same area dependent on the activity. The plot below summarizes data related to participants' activities, then creates a boxplot, showing the distribution of the first x-coordinate across activities for each participant and the average duration of the first fixation. The plot is faceted by activity for better comparison.
 
-Let’s translate our natural-language research question into: Whether all participants stare in relatively the same positions across the activities. The easy solution is to estimate location by plotting the x, and y coordiantes for each participant across all activities.Only the row with the minimum timestamp (i.e., the first fixation) is provided below by each activity. The preliminary results show, the first fixation across desktop actiivites is different but most participants look in the same area.
 
 ```{r}
-# Sample data creation
-set.seed(123) # for reproducibility
-n_points <- 100 # Number of data points per participant
-n_participants <- 24
+combined_data %>%
+  filter(!is.na(activity)) %>%
+  arrange(participant, activity, timestamp) %>%
+  group_by(activity, participant) %>%
+  summarise(
+    avg_duration = mean(timestamp - first(timestamp)),
+    first_x = first(x),  # Take the first x-coordinate
+    min_y = first(y),
+    avg_first_fixation_duration = mean(c(0, diff(timestamp)))  # Calculate average duration of the first fixation
+  ) %>%
+  ggplot(aes(x = avg_first_fixation_duration, y = first_x, fill = activity)) +
+  geom_boxplot() +
+  geom_point(position = position_jitter(height = 1), size = .02, alpha = 1) +  # Add individual points with jitter
+  labs(title = "Distribution of First Fixation Durattion and X-Coordinate Across Activities for Each Participant",
+       x = "Average First Fixation Duration (ms)",
+       y = "first x coordinate",
+       fill = "Activity") +
+  theme_minimal()+
+  scale_x_continuous(labels = scales::number_format(scale = 2, suffix = "x"))+
+  facet_wrap(~ activity)
+```
 
-# Generate sample data for 24 participants
-data <- tibble(
-  participant = rep(paste0("P", 1:n_participants), each = n_points),
-  x = runif(n_points * n_participants, min = 0, max = 1920),
-  y = runif(n_points * n_participants, min = 0, max = 1080),
-  timestamp = runif(n_points * n_participants, min = 0, max = 399184),
-  activity = rep(c("WRITE", "WATCH", "SEARCH", "READ", "PLAY", "INTERPRET", "DEBUG", "BROWSE", "READ"), each = n_points, length.out = n_points * n_participants)
-)
+```{r}
+combined_data %>%
+  filter(!is.na(activity)) %>%
+  arrange(participant, activity, timestamp) %>%
+  group_by(activity, participant) %>%
+  summarise(
+    first_x = first(x),  # Take the first x-coordinate
+    first_y = first(y)   # Take the first y-coordinate
+  ) %>%
+  ggplot(aes(x = first_x, y = first_y, color = activity)) +
+  geom_point(position = position_jitter(height = 1), size = 2, alpha = 0.7) +
+  labs(
+    title = "Distribution of First X and Y Coordinates Across Activities for Each Participant",
+    x = "First x coordinate",
+    y = "First y coordinate",
+    color = "Activity"
+  ) +
+  theme_minimal()+
+  facet_wrap(~ activity)
+```
 
-# Create scatter plot with x, y, and timestamp
-ggplot(data, aes(x = x, y = y, color = participant)) +
-  geom_point() +
-  labs(title = "Scatter Plot of Eye Gaze Coordinates",
-       x = "X Coordinate", y = "Y Coordinate", color = "Participant") +
+```{r}
+combined_data %>%
+  filter(!is.na(activity)) %>%
+  arrange(participant, activity, timestamp) %>%
+  group_by(activity, participant) %>%
+  summarise(
+    avg_duration = mean(timestamp - first(timestamp)),
+    first_x = first(x),  # Take the first x-coordinate
+    min_y = first(y),
+    avg_first_fixation_duration = mean(c(0, diff(timestamp)))  # Calculate average duration of the first fixation
+  ) %>%
+  ggplot(aes(x = avg_first_fixation_duration, y = first_x, color = activity)) +
+  geom_line(size = 1) +  # Line graph for first x coordinates
+  geom_point(position = position_jitter(height = 1), size = .02, alpha = 1) +  # Add individual points with jitter
+  labs(
+    title = "Distribution of First Fixation Duration and X-Coordinate Across Activities for Each Participant",
+    x = "Average First Fixation Duration (ms)",
+    y = "First x Coordinate",
+    color = "Activity"
+  ) +
   theme_minimal() +
+  scale_x_continuous(labels = scales::number_format(scale = 2, suffix = "x")) +
   facet_wrap(~ activity)
 
 ```
+
 
 
 ## Discussion
 
-The resulting graph effectively demonstrates the relationships between the 'activity' and 'participant' variables. It plots the participants on the x-axis and utilizes facets to categorize the data points based on different activities. This facet arrangement allows for a clear comparison of the gaze patterns among the participants for each specific activity.Through this visual representation, we can observe distinct variations in the participants' gaze patterns across different activities. The clear differentiation in the plotted data points suggests potential differences in how participants engage with various activities, providing valuable insights into their cognitive processes and task engagement strategies during the experiment or study.
+The resulting graph demonstrates the relationships between the 'activity' and 'participant' variables and average of first fixation duration. It plots the participants average first fixation time on the x-axis and utilizes facets to categorize the data points based on different activities. This facet arrangement allows for a clear comparison of the gaze patterns and x coordinates among the participants for each specific activity.Through this visual representation, we can observe distinct variations in the participants' gaze patterns across different activities and first time fixation on which area. For each activity we observe the average time spent on the first attended item and where on the item participants looked. The clear differentiation in the plotted data points suggests potential differences in how participants engage with various desktop activities, providing valuable insights into their cognitive processes and task engagement strategies during the experiment or study.
 
 
-```{r}
-# Sample data creation
-set.seed(123) # for reproducibility
-n_points <- 2000 # Number of data points per participant
-n_participants <- 24
-
-# Generate sample data for 24 participants
-data <- tibble(
-  participant = rep(paste0("P", 1:n_participants), each = n_points),
-  x = runif(n_points * n_participants, min = 0, max = 1920),
-  y = runif(n_points * n_participants, min = 0, max = 1080),
-  timestamp = runif(n_points * n_participants, min = 0, max = 399184),
-  activity = rep(c("WRITE", "WATCH", "SEARCH", "READ", "PLAY", "INTERPRET", "DEBUG", "BROWSE", "READ"), each = n_points, length.out = n_points * n_participants)
-)
-
-# Select only the first fixation's x and y coordinates for each participant
-first_fixations <- data %>%
-  group_by(participant) %>%
-  slice_min(timestamp) %>%
-  ungroup()
-
-# Create scatter plot with the first fixation x, and y coordinates
-ggplot(first_fixations, aes(x = x, y = y, color = participant)) +
-  geom_point() +
-  labs(title = "Scatter Plot of First Fixation Eye Gaze Coordinates",
-       x = "X Coordinate", y = "Y Coordinate", color = "Participant") +
-  theme_minimal() +
-  facet_wrap(~ activity)
-```
 
 
+## Citations
+
+Holmqvist, K., Nyström, M., Andersson, R., Dewhurst, R., Halszka, J., & van de Weijer, J. (2011). Eye Tracking : A Comprehensive Guide to Methods and Measures. Oxford University Press. http://ukcatalogue.oup.com/product/9780199697083.do
+
+Srivastava, N., Newn, J., & Velloso, E. (2018). Combining Low and Mid-Level Gaze Features for Desktop Activity Recognition. Proceedings of the ACM on Interactive, Mobile, Wearable and Ubiquitous Technologies, 2(4), 189.
 
