@@ -9,6 +9,7 @@ date: "2023-11-1"
 # Setup
 
 ```{r}
+## DH: lubridate, ggplot2, dplyr, tibble all loaded by tidyverse
 suppressPackageStartupMessages({
   suppressWarnings(library(tidyverse))   # for working with the data
   suppressWarnings(library(lubridate))   # for working with datetime data
@@ -28,7 +29,7 @@ suppressPackageStartupMessages({
 ## Introduction
 
 
-By analyzing an existing gaze data set collected from 24 participants engaged in eight distinct desktop activities this research will contribute to our understanding of visual perception.This project aims to assess first fixation metrics for recognizing desktop activities. The first fixation, represents the immediate processing of the attended stimulus and serves as a measure of attention.
+By analyzing an existing gaze data set collected from 24 participants engaged in eight distinct desktop activities this research will contribute to our understanding of visual perception. This project aims to assess first fixation metrics for recognizing desktop activities. The first fixation, represents the immediate processing of the attended stimulus and serves as a measure of attention.
 
 The proposed research is specifically concerned with: Can the application of first fixation metrics (a common eye-tracking measure) contribute to desktop activity recognition? 
 
@@ -41,14 +42,19 @@ The current research inquiry revolves around the question, to what extent can th
 This isn’t very precise, but that’s okay: Part of the goal of this EDA project is to clarify eye-metrics that contribute to understanding of visual perception.
 
 ```{r}
-file_path <- "C:/Users/mv014/OneDrive - State Center Community College Distrct/Desktop/desktop/2022 Requests/UCM/R training/UcmFALL 2023/R2023/Final Project/desktopactivities all.xlsx"
+## DH: Don't use absolute paths
+file_path <- file.path('data', 'desktopactivities all.xlsx')
 ```
 
 ##  Methods
 
 The study will be using eye-data on students as they preformed different desktop activities, available on Kaggle. The dataset comprises raw gaze coordinates (x-y) and timestamp data collected from 24 participants who were engaged in eight distinct desktop activities: Read, Browse, Play, Search, Watch, Write, Debug, and Interpret.
 
-The dataset is available for download  at the URL:https://www.kaggle.com/datasets/namratasri01/eye-movement-data-set-for-desktop-activities. There are 192 individual files, so I need to do some data wrangling and combine them into one dataframe for analysis.
+The dataset is available for download  at the URL: <https://www.kaggle.com/datasets/namratasri01/eye-movement-data-set-for-desktop-activities>. There are 192 individual files, so I need to do some data wrangling and combine them into one dataframe for analysis.
+
+<!-- DH: Okay, so what's up with the Excel spreadsheet in the `data` folder? -->
+
+<!-- DH: You're jumping back and forth a bit between the purposes of the data collection and material details about retrieving the data from Kaggle. Give us the high-level view of the purpose of the dataset in the introduction, and here focus on downloading the data. -->
 
 The original objective  by Srivastava et al. (2018) was to introduce a level of abstraction between low- and high-level gaze features, known as "mid-level gaze features." These mid-level gaze features don't necessitate a understanding of interface design but are based on intuitive knowledge about the types of eye movements associated with different activities. Intuitively, anyone can deduce the nature of a user's activity by examining gaze patterns. 
 
@@ -62,6 +68,7 @@ The dataset includes the x and y coordinates and timestamps of students' eye pos
 sheet_names <- excel_sheets(file_path) # Get the sheet names
 data_frames <- list()# Initialize an empty list to store the data frames
 
+## DH: This approach violates immutability, and in R the preference is to use functions like `map()` rather than loops
 # Read each sheet and store the data frames in the list
 for (sheet in sheet_names) {
   data_frames[[sheet]] <- read_excel(file_path, sheet = sheet)
@@ -70,13 +77,15 @@ for (sheet in sheet_names) {
 
 combined_data <- do.call(rbind, data_frames) # Combine all data frames into one big data frame
 
-
 print(combined_data) # Print the combined data
+
+## DH: Since we're never using `data_frames` again, and it's kind of big, recommend cleaning it up
+rm(data_frames)
 ```
 
 # Results
 
-For the EDA project I will use  base R functions to look at dimensions of the dataframe and column (variable) types outlined by Peng and Matsui (2016). The analysis covers the all the items from the checklist. The following results  below were found.
+For the EDA project I will use  base R functions to look at dimensions of the dataframe and column (variable) types outlined by Peng and Matsui (2016). The analysis covers the all the items from the checklist. The following results  below were found. <!-- DH: You don't use base R functions below -->
 
 ```{r}
 skim(combined_data) #3. Check the packaging ~How many rows and columns?    Are there any types that might indicate parsing problems? NO
@@ -84,9 +93,10 @@ skim(combined_data) #3. Check the packaging ~How many rows and columns?    Are t
 
 ## Dataset
 
-Specifically, the dataset contains information on 24 unique participants, 3 unique trials, and 8 unique activities.The data includes rows with unique x, y, and timestamp values, with each row identified by the raw_row_number. The variables 'participant', 'set', and ;'activity' serve as identifiers.  Notably, the participant, set, and activity variables do not contain any missing values. Within the dataset, the variables x and y represent the spatial coordinates, while the timestamp indicates the specific time point when the gaze was at the corresponding x, y coordinate. The timestamp is instrumental in representing durations or the "time spent" on a particular activity. It's worth noting that the variables representing activity and set also do not contain any missing values. In total the data set consists of 1505813 rows (observations); 6 columns (variables).The 3 variables are handled as characters, 3 as numeric. 
+Specifically, the dataset contains information on 24 unique participants, 3 unique trials, and 8 unique activities.  <!-- DH: Are you getting these numbers from metadata on Kaggle (or some other exterior source), or from the dataset itself?  Could be a good way to check your Ns! --> The data includes rows with unique x, y, and timestamp values, with each row identified by the raw_row_number. The variables 'participant', 'set', and 'activity' serve as identifiers.  Notably, the participant, set, and activity variables do not contain any missing values. Within the dataset, the variables x and y represent the spatial coordinates, while the timestamp indicates the specific time point when the gaze was at the corresponding x, y coordinate. The timestamp is instrumental in representing durations or the "time spent" on a particular activity. It's worth noting that the variables representing activity and set also do not contain any missing values. In total the data set consists of 1,505,813 rows (observations); 6 columns (variables). The 3 variables are handled as characters, 3 as numeric. 
   For the motivating question, the data set is appropriate as the eye gaze coordinates and timestamp is 100% complete. Also, the desktop activity data is 100% complete. Some potential limitations are the complicated nature of eye-metric data in x, y and timestamp analysis, especially given the lack of dimensions of the desktop used so lets presume a 1080 resolution. Resolution is important to calculate saccades,and important in fixation duration for future studies. 
   To examine the data set for missing values I can't use 'vis_miss(combined_data)' because of large data which causes a error so 'sample_n' to draw a subset was used. Arguments in vis_miss() are useful for picking up patterns in missing values. As seen below there is no missing data.
+<!-- DH: Recommend breaking this giant wall of text into multiple paragraphs.  You can also intersperse code blocks: metadata says there should be 24 unique participants, and here's how that compares to `count(combined_data, participant)`. -->
 
 ```{r}
 set.seed(123)
@@ -97,6 +107,7 @@ vis_miss(dataf_smol)
 
 
 ```{r}
+## DH: Why take another subsample? 
 combined_smol = sample_n(combined_data, 1000) #subset of combined data
 ```
 
@@ -115,8 +126,11 @@ combined_data %>%
             min_y = first(y))
 ```
 
+<!-- DH: So what's your answer? -->
 
 # Data Summary-Check your n's
+
+<!-- DH: This was step 4, "Look at the top and bottom of your data" -->
 
 With  over 1 million rows, the dataframe is too large to print in a readable way. Instead  the base R function View() in an interactive session was used. An Excel-like spreadsheet presentation View() can cause significant problems if you use it with a large dataframe on a slower machine, so I used a pipe. Overall, this code block is designed to provide an interactive way to examine the top and bottom rows of the combined_data and combined_smol data frames, allowing for easy inspection and understanding of the big data structure and contents.
 
@@ -134,7 +148,11 @@ if (interactive()) {
 }
 ```
 
+<!-- DH: Anything notable here? -->
+
 The skimr to check data quality was applied and examined the minimum and maximum values. All of the ranges make sense for what I expect the variable to be given each of the activities were not to exceed 5-6 minutes.
+
+<!-- DH: You already did this, in the "Results" section? -->
 
 ```{r}
 skim(combined_data)
@@ -144,6 +162,7 @@ skim(combined_data)
 Since there is not another duplicate set or typical data set for desktop activities and eye-metric times, I cannot check against n's, as the total expected are in the dataframe. So here I am checking the sample to see if timescale for one activity matches with the dataset. In this example, by downloading the dataset from the kaggle website, you can see the first, 'x' and 'y' coordinates in 'write' activity for participant no.24, assigned in set 'B' match with the sample below. 
 
 ```{r}
+## DH: What is this? What are we supposed to do with it? 
 # Given table
 data <- tibble::tribble(
   ~participant, ~set, ~activity, ~x, ~y, ~timestamp, #plot of head
@@ -158,7 +177,7 @@ data <- tibble::tribble(
 
 # Validation
 
-In the original methods section, the authors detail that all of the activities last about 5-6 minutes. Therefore the timestamps for the coordinates for each activity for all participants should not exceed this time, and indeed the max duration for one activity in going through all the values is ~6 minutes (399184 ms). A web search leads us to the website for the article where the data set is used: *https://www.researchgate.net/publication/329955224_Combining_Low_and_Mid-Level_Gaze_Features_for_Desktop_Activity_Recognition and published.*
+In the original methods section, the authors detail that all of the activities last about 5-6 minutes. Therefore the timestamps for the coordinates for each activity for all participants should not exceed this time, and indeed the max duration for one activity in going through all the values is ~6 minutes (399184 ms). A web search leads us to the website for the article where the data set is used: <https://www.researchgate.net/publication/329955224_Combining_Low_and_Mid-Level_Gaze_Features_for_Desktop_Activity_Recognition> and published.
 
 
 ```{r}
@@ -172,6 +191,13 @@ combined_data %>%
     min_y = first(y)
   ) %>%
   arrange(desc(max_duration))#By adding arrange(desc(max_duration)) at the end of the pipeline, the data will be sorted in descending order based on the max_duration column, showing the highest amounts of max_duration first.
+
+## DH: Good, though this leaves out the step of comparing these values to the 399184 ms limit.  Compare: 
+combined_data %>%
+  filter(!is.na(activity)) %>%
+  arrange(timestamp) %>%
+  mutate(too_long = timestamp > 399184) %>% 
+  count(too_long)
 ```
 
 # Plot 
@@ -180,7 +206,7 @@ The initial plot illustrates the variability in the average time participants sp
   Finally, in the box plot graph, the dots show the individual participant first fixation duration average values for each activity.The code calculates the first fixation duration by determining the time difference between the timestamp of the first fixation and the start time (0). The resulting plot then provides the average duration of the first fixation for each group defined by 'activity' and 'participant'. This information is derived from the computation of the avg_first_fixation_duration. 
 
 ```{r}
-
+## DH: First, geom_bar() with `stat = 'identity'` is just geom_col().  Second, using columns here results in heavy overplotting, which you can see by setting `color = 'black'`: there's one column for each activity-participant combination.  Without that you just see the column for the highest average.  What you want is geom_point(), showing the average for each participant in each activity. 
 combined_data %>%
   filter(!is.na(activity)) %>%
   arrange(timestamp) %>%
@@ -191,7 +217,8 @@ combined_data %>%
     min_y = first(y)
   ) %>%
   ggplot(aes(x = activity, y = avg_duration, fill = activity)) +
-  geom_bar(stat = "identity") +
+  # geom_col(color = 'black') +
+  geom_point() +
   labs(title = "Average Duration Time Across Activities for Each Participant",
        x = "Activity",
        y = "Average Duration (ms)",
@@ -200,6 +227,7 @@ combined_data %>%
 
 ```
 ```{r}
+## DH: Same issue here.  Here's a variant where we're connecting the averages for each participant. Looks to me like 2 or 3 participants tend to have especially long first fixation across activities. 
 combined_data %>%
   filter(!is.na(activity)) %>%
   arrange(participant, activity, timestamp) %>%
@@ -210,8 +238,12 @@ combined_data %>%
     min_y = first(y),
     avg_first_fixation_duration = mean(c(0, diff(timestamp)))  # Calculate average duration of the first fixation
   ) %>%
-  ggplot(aes(x = activity, y = avg_first_fixation_duration, fill = activity)) +
-  geom_bar(stat = "identity") +
+  ggplot(aes(x = activity, y = avg_first_fixation_duration, 
+             color = participant)) +
+  # geom_col() +
+  geom_line(aes(group = participant), alpha = .25) +
+  geom_point() +
+  scale_color_discrete(guide = 'none') +
   labs(title = "Average Duration of First Fixation Across Activities for Each Participant",
        x = "Activity",
        y = "Average Duration of First Fixation (ms)",
@@ -220,10 +252,11 @@ combined_data %>%
 ```
 # A plot that tells us location for each activity.
 
-To translate the research question: Do all participants stare in relatively the same positions across the activities? The easy solution is to estimate location by plotting the x, or y coordinates since eye-movements are symmetrical, for each participant across the average first fixation time stamp for each activity.Only the row with the minimum timestamp (i.e., the first fixation) is provided below by each activity. The preliminary results show, the first fixation across desktop actiivites is different but most participants look in the same area dependent on the activity. The plot below summarizes data related to participants' activities, then creates a boxplot, showing the distribution of the first x-coordinate across activities for each participant and the average duration of the first fixation. The plot is faceted by activity for better comparison.
+To translate the research question: Do all participants stare in relatively the same positions across the activities? The easy solution is to estimate location by plotting the x, or y coordinates since eye-movements are symmetrical, for each participant across the average first fixation time stamp for each activity. Only the row with the minimum timestamp (i.e., the first fixation) is provided below by each activity. The preliminary results show, the first fixation across desktop activites is different but most participants look in the same area dependent on the activity. The plot below summarizes data related to participants' activities, then creates a boxplot, showing the distribution of the first x-coordinate across activities for each participant and the average duration of the first fixation. The plot is faceted by activity for better comparison.
 
 
 ```{r}
+## DH: Having trouble reading this with scatterplots overlaying variable-width histograms.  Seems like this would work better as two separate plots. 
 combined_data %>%
   filter(!is.na(activity)) %>%
   arrange(participant, activity, timestamp) %>%
@@ -234,15 +267,24 @@ combined_data %>%
     min_y = first(y),
     avg_first_fixation_duration = mean(c(0, diff(timestamp)))  # Calculate average duration of the first fixation
   ) %>%
-  ggplot(aes(x = avg_first_fixation_duration, y = first_x, fill = activity)) +
+  ## DH: long line
+  ggplot(aes(x = avg_first_fixation_duration, 
+             y = first_x, 
+             fill = activity)) +
   geom_boxplot() +
-  geom_point(position = position_jitter(height = 1), size = .02, alpha = 1) +  # Add individual points with jitter
+  ## DH: long line; remove unnecessary comment
+  geom_point(position = position_jitter(height = 1), 
+             size = .02, 
+             alpha = 1) + 
   labs(title = "Distribution of First Fixation Durattion and X-Coordinate Across Activities for Each Participant",
        x = "Average First Fixation Duration (ms)",
        y = "first x coordinate",
        fill = "Activity") +
   theme_minimal()+
-  scale_x_continuous(labels = scales::number_format(scale = 2, suffix = "x"))+
+  ## DH: long line, spacing; why the x suffix? 
+  scale_x_continuous(labels = scales::number_format(scale = 2, 
+                                                    suffix = "x")) +
+  ## DH: Consider using scales = 'free_x'
   facet_wrap(~ activity)
 ```
 
@@ -267,6 +309,8 @@ combined_data %>%
   facet_wrap(~ activity)
 ```
 
+<!-- DH: Anything notable here? -->
+
 ```{r}
 combined_data %>%
   filter(!is.na(activity)) %>%
@@ -289,15 +333,18 @@ combined_data %>%
   ) +
   theme_minimal() +
   scale_x_continuous(labels = scales::number_format(scale = 2, suffix = "x")) +
+  ## DH: Consider scales = 'free_x' here? 
   facet_wrap(~ activity)
 
 ```
+
+<!-- DH: Anything notable here? -->
 
 
 
 ## Discussion
 
-The resulting graph demonstrates the relationships between the 'activity' and 'participant' variables and average of first fixation duration. It plots the participants average first fixation time on the x-axis and utilizes facets to categorize the data points based on different activities. This facet arrangement allows for a clear comparison of the gaze patterns and x coordinates among the participants for each specific activity.Through this visual representation, we can observe distinct variations in the participants' gaze patterns across different activities and first time fixation on which area. For each activity we observe the average time spent on the first attended item and where on the item participants looked. The clear differentiation in the plotted data points suggests potential differences in how participants engage with various desktop activities, providing valuable insights into their cognitive processes and task engagement strategies during the experiment or study.
+The resulting graph demonstrates the relationships between the 'activity' and 'participant' variables and average of first fixation duration. It plots the participants average first fixation time on the x-axis and utilizes facets to categorize the data points based on different activities. This facet arrangement allows for a clear comparison of the gaze patterns and x coordinates among the participants for each specific activity. Through this visual representation, we can observe distinct variations in the participants' gaze patterns across different activities and first time fixation on which area. For each activity we observe the average time spent on the first attended item and where on the item participants looked. The clear differentiation in the plotted data points suggests potential differences in how participants engage with various desktop activities, providing valuable insights into their cognitive processes and task engagement strategies during the experiment or study.
 
 ## Observations
 
