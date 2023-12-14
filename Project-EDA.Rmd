@@ -1,9 +1,11 @@
 ---
 title: "Final Project-Maribel Viveros"
 output:
-  html_document: default
+  pdf_document: 
+    latex_engine: xelatex
   word_document: default
-  pdf_document: default
+  html_document: default
+  
 date: "2023-11-1"
 ---
 # Exploratory Eye Gaze Analysis
@@ -53,9 +55,12 @@ I aim to delve into the intricacies of eye behavior, examining whether initial g
 
 # Dataset
   The Srivastava and colleagues (2018) gaze dataset used in this project is publicly accessible on Kaggle. It encompasses raw gaze coordinates (x-y) and timestamp data obtained from 24 participants actively engaged in eight specific desktop activities; Read, Browse, Play, Search, Watch, Write, Debug, and Interpret. Each individual has to go through 3 sets of the task. 
-  
+
+
 ```{r}
-#kaggle_url <- "https://www.kaggle.com/datasets/namratasri01/eye-movement-data-set-for-desktop-activities/download?datasetVersionNumber=1" Location of files for download
+#The kaggle_url <- https://www.kaggle.com/datasets/namratasri01/
+#eye-movement-data-set-for-desktop-activities/download?datasetVersionNumber=1" 
+#Location of files for download
 ```
 
 The initial gaze dataset was collected using the Tobii Pro X2-30 eye tracker.  The eye tracker was mounted on a 24-inch monitor. Participants were seated at an approximate distance of 60 centimeters from the display. Subsequent to the proficient execution of the manufacturer-prescribed 9-point calibration procedure, participants were afforded the liberty to move throughout the experimental session, capitalizing on the resilient tracking capabilities inherent to the infrared-illuminated eye tracker integrated within the screen. Depending on the specific task, participants were provided with directives to engage with the keyboard and/or mouse as dictated by the requirements, prefaced by a prompt to sustain attention on the assigned task.
@@ -64,13 +69,16 @@ The initial gaze dataset was collected using the Tobii Pro X2-30 eye tracker.  T
 The dataset is both complex and robust, consisting of 192 files, encompassing 1152 columns, and approximately 9,000 rows for each participant per activity. After visiting the kaggle website, the datafiles were downloaded into a 'data' folder. It is available on Kaggle at: https://www.kaggle.com/datasets/namratasri01/eye-movement-data-set-for-desktop-activities. The data set consists of eye-movements and has x and y and timestamp data.The variables 'participant', 'set', and 'activity' serve as identifiers.There were a total of 24 participants in the study, although they did not provide a reason for joining the study. 
 
 ```{r}
-file_paths <- file.path("data") # Set the path to the data folder where you downloaded the files from Kaggle insert your file path here' with the actual path to the downloaded files
+# Set the path to the data folder where you downloaded the files from Kaggle insert your file 
+# path here' with the actual path to the downloaded files
+file_paths <- file.path("data") 
 ```
 
 To facilitate the examination of desktop activity identification, these individual participant datasets were merged into a unified file, resulting in a dataset with approximately 1505813 rows (observations); 6 columns (variables), 3 variables are handled as characters, and 3 as numeric.This is necessary to support the robustness of predictions derived from the integrated dataset.  Within the dataset, the variables x and y represent the spatial coordinates, while the timestamp indicates the specific time point when the gaze was at the corresponding x, y coordinate. The timestamp is instrumental in representing durations or the "time spent" on a particular activity. 
 
 ```{r}
-output_file <- "combined_dataset.csv" # The combined resulting csv file  will be saved in your working directory.
+# The combined resulting csv file  will be saved in your working directory.
+output_file <- "combined_dataset.csv" 
 csv_files <- list.files(file_paths, pattern = "\\.csv$", full.names = TRUE)
 list_data <- map(csv_files, read.csv)
 combined_data <- do.call(rbind, list_data)
@@ -87,8 +95,9 @@ skim(combined_data)
   Notably, the participant, set, and activity variables did not contain any missing values. Arguments in vis_miss() are useful for picking up patterns in missing values.   However, because of large data which caused a error to examine the data set for missing values 'sample_n' to draw a subset was used. 
 
 ```{r}
+#sample to big so we'll draw a subset #but no missing data 
 set.seed(123)
-dataf_smol = sample_n(combined_data, 1000) #sample to big so we'll draw a subset #but no missing data 
+dataf_smol = sample_n(combined_data, 1000) 
 
 vis_miss(dataf_smol)
 ```
@@ -189,6 +198,7 @@ combined_data %>%
 The second graph focuses on assessing the average duration of the first fixation-first glance, which represents the time difference between the first and start of timestamps. The differences in the time spent during the first glance aims to reveal more noticeable distinctions in first fixation times across various activities and participants. The code calculates the first fixation duration by determining the time difference between the timestamp of the first fixation and the start time (0). 
 
 ```{r}
+# Calculate average duration first fixation
 combined_data %>%
   filter(!is.na(activity)) %>%
   arrange(participant, activity, timestamp) %>%
@@ -197,7 +207,7 @@ combined_data %>%
     avg_duration = mean(timestamp - first(timestamp)),
     min_x = first(x),
     min_y = first(y),
-    avg_first_fixation_duration = mean(c(0, diff(timestamp)))  # Calculate average duration of the first fixation
+    avg_first_fixation_duration = mean(c(0, diff(timestamp)))  
   ) %>%
   ggplot(aes(x = activity, y = avg_first_fixation_duration, fill = activity)) +
   geom_point() +
@@ -209,7 +219,7 @@ combined_data %>%
 ```
 
 
-Finally, in looking at patterns of eye-behaviors Its important to identify outliers. This will give a better picture of if all the participants had particular regions of interest within a given activity. The box plot show the "avg_first_fixation_duration" variable for each "participant" categorized by "activity." Outliers, exceeding the whiskers, are depicted as individual points. The box plot and the scattered points, show the average first fixation durations are spread across various activities for each participant. The individual participant data points, represented as dots, are plotted using coordinates derived from "first_x" on the x-axis and "avg_first_fixation_duration" on the y-axis. The graph show differences in average time spent per activity, and highlights individual differences across the first landing position (x) and average time spent, as noted by the outliers.
+Finally, in looking at patterns of eye-behaviors Its important to identify outliers. The plot below summarizes data related to participants' activities, then creates a boxplot, showing the distribution of the first x-coordinate across activities for each participant and the average duration of the first fixation. The plot is faceted by activity for comparison.This will give a better picture of if all the participants had particular regions of interest within a given activity. The box plot show the "avg_first_fixation_duration" variable for each "participant" categorized by "activity." Outliers, exceeding the whiskers, are depicted as individual points. The box plot and the scattered points, show the average first fixation durations are spread across various activities for each participant. The individual participant data points, represented as dots, are plotted using coordinates derived from "first_x" on the x-axis and "avg_first_fixation_duration" on the y-axis. The graph show differences in average time spent per activity, and highlights individual differences across the first landing position (x) and average time spent, as noted by the outliers.
 
 ```{r}
 combined_data %>%
@@ -219,14 +229,14 @@ combined_data %>%
   summarise(
     avg_duration = mean(timestamp - first(timestamp)),
     first_x = first(x),  # Take the first x-coordinate
-    avg_first_fixation_duration = mean(c(0, diff(timestamp)))  # Calculate average duration of the first fixation
+    avg_first_fixation_duration = mean(c(0, diff(timestamp))) 
   ) %>%
   ggplot(aes(x = avg_first_fixation_duration, y = first_x , fill = activity)) +
   geom_boxplot() +
   geom_point(position = position_jitter(height = 1), 
              size = .02, 
              alpha = 1) +  
-  labs(title = "Distribution of First Fixation Duration and Across Activities for Each Participant",
+  labs(title = "Distribution of First Fixation Duration across Activities for Each Participant",
        x = "Average First Fixation Duration (ms)",
        y = "first x coordinate",
        fill = "Activity") +
@@ -236,7 +246,7 @@ combined_data %>%
 ```
 
 To translate the research question: Do all participants stare in relatively the same positions across the activities? The easy solution is to estimate location by plotting the x, or y coordinates since eye-movements are symmetrical, for each participant across the average first fixation time stamp for each activity.Only the row with the minimum timestamp (i.e., the first fixation) is provided below by each activity. 
-  The preliminary results show, the first fixation across desktop activities is different but most participants look in the same area dependent on the activity. The plot below summarizes data related to participants' activities, then creates a boxplot, showing the distribution of the first x-coordinate across activities for each participant and the average duration of the first fixation. The plot is faceted by activity for comparison.
+  The preliminary results show, the first fixation across desktop activities is different but most participants look in the similar regions of the task area, which is dependent on the activity. 
   
 
 ```{r}
@@ -277,7 +287,7 @@ combined_data %>%
     avg_duration = mean(timestamp - first(timestamp)),
     first_x = first(x),  # Take the first x-coordinate
     min_y = first(y),
-    avg_first_fixation_duration = mean(c(0, diff(timestamp)))  # Calculate average duration of the first fixation
+    avg_first_fixation_duration = mean(c(0, diff(timestamp)))  
   ) %>%
   ggplot(aes(x = first_x, y = avg_first_fixation_duration, color = activity)) +
   geom_line(size = 1) +  # Line graph for first x coordinates
@@ -296,15 +306,15 @@ combined_data %>%
 
 ## Limitations
 
-The substantial size of the individual data sets, particularly with eye-metrics generating extensive data, presented anticipated challenges in the analysis phase. The determination of the "first time to fixation" instance to utilize proved intricate due to the richness of eye-tracking data. While eye-tracking studies conventionally rely on the averages of first time to fixation for analysis, we acknowledge the complexity of this decision. The variables influencing data inclusion and exclusion encompass participant selection, diverse eye behaviors, and a concerted effort to minimize misclassification. Additionally, the imposition of specific time window parameters reflects the researcher's discretion in choosing data processing techniques. Despite the complexity, the project yielded valuable insights, as observed differences in the location and time of the first fixation across activities aligned with the research question.
+The substantial size of the individual data sets, particularly with eye-metrics generating extensive data, presented anticipated challenges in the analysis phase. The determination of the "first time to fixation" instance to utilize proved intricate due to the richness of eye-tracking data. While eye-tracking studies conventionally rely on the averages of first time to fixation for analysis, I acknowledge the complexity of this decision. The variables influencing data inclusion and exclusion encompass participant selection, diverse eye behaviors, and a concerted effort to minimize misclassification. Additionally, the imposition of specific time window parameters reflects the researcher's discretion in choosing data processing techniques. Despite the complexity, the project yielded valuable insights, as observed differences in the location and time of the first fixation across activities aligned with the research question.
 
-In shaping the trajectory of future research, a key consideration arises from the observed outliers in the box plot, indicating variability beyond the mean, upper, and lower quartiles for each activity. The emphasis on examining and understanding individual differences gains significance, urging the research community towards a more nuanced exploration of eye-metrics. Future studies should prioritize investigating these individual differences to enrich our understanding of visual engagement patterns and further refine desktop activity recognition. I anticipated challenges in the analysis. Determining which instance of "first time to fixation" to utilize proved difficult. Typically, eye tracking studies rely on the averages of first time to fixation for analysis so that is what I included. The information on power relations and values influencing data inclusion and exclusion are the participant selection, the variety of eye behaviors, and the focus on reducing misclassification. The specific time window paramaters also reflects the power researchers have in imposing any limitation in the data processing techniques. The complexity of the data aligned with my expectations and it was a challenging project. However, some notable differences in location of first fixation and time across activity were observed so the data fit the research question and I was able to make some conclusions.  
+In shaping the trajectory of future research, a key consideration arises from the observed outliers in the box plot, indicating variability beyond the mean, upper, and lower quartiles for each activity. The emphasis on examining and understanding individual differences gains significance, urging the research community towards a more nuanced exploration of eye-metrics. Future studies should prioritize investigating these individual differences to enrich our understanding of visual engagement patterns and further refine desktop activity recognition. I anticipated challenges in the analysis. Determining which instance of "first time to fixation" to utilize proved difficult. Typically, eye tracking studies rely on the averages of first time to fixation for analysis so that is what I included. The complexity of the data aligned with my expectations and it was a challenging project. However, some notable differences in location of first fixation and time across activity were observed so the data fit the research question and I was able to make some conclusions.  
 
   In shaping the trajectory of future research, the focus should extend beyond the averages of first time to fixation.  The box plot revealed outliers beyond the mean, upper, and lower quartiles for each activity, indicating a need for focused investigation in individual differences.  Therefore, future studies should prioritize examining and understanding these individual differences, guiding the research community towards a more nuanced and impactful understanding of individual differences in eye-metrics. 
 
 ## Discussion
 
-For each specific activity, both the average time spent on the first attended item and the location on the item where participants directed their gaze showed differences. The distinct differences in the plotted data points indicate potential variations in how individual participants engage with different desktop activities. These observations offer valuable insights into cognitive processes and task engagement strategies during the course of the study.By understanding the context of users' activities, systems can provide more personalized and helpful support. This aligns with the researchers’ view that these studies have the potential to enhance users' daily tasks and encourage healthy lifestyles. ThUltimately, the study's objective is to simplify activity recognition by leveraging intuitive knowledge of eye movements and patterns.
+For each specific activity, both the average time spent on the first attended item and the location on the item where participants directed their gaze showed differences. The distinct differences in the plotted data points indicate potential variations in how individual participants engage with different desktop activities. These observations offer valuable insights into cognitive processes and task engagement strategies during the course of the study. By understanding the context of users' activities, systems can provide more personalized and helpful support. This aligns with the researchers’ view that these studies have the potential to enhance users' daily tasks and encourage healthy lifestyles. Ultimately, the study's objective is to simplify activity recognition by leveraging intuitive knowledge of eye movements and patterns.
 
 Regarding the initial research question, *Can the application of first fixation metrics (a common eye-tracking measure) contribute to desktop activity recognition?* Initial observations of the first glance and first time of fixation reveal differences across various activities. However, the data also emphasize individual disparities in eye behaviors, suggesting a need for further research to explore individual patterns of eye behaviors and the extent to which certain eye metrics can be generalized.
 
@@ -312,7 +322,7 @@ Regarding the initial research question, *Can the application of first fixation 
 
 This research project contributes to the advancement of eye-based activity recognition, offering empirical support for the integration of eye metrics in understanding visual perception. The observed differences in first fixation times across activities suggest a potential avenue for enhancing activity recognition using eye-tracking data. Future studies should delve deeper into individual differences, focusing on outliers and variations beyond average metrics. The implications of this research extend to the development of context-aware interactive systems, personalized support for users' activities, and potential applications in education, technology, and cognitive science.
 
-In conclusion, this study lays the foundation for future investigations into the intricate relationship between eye behaviors and desktop activities.
+In conclusion, this study contributes to the foundation for future investigations into the intricate relationship between eye behaviors and desktop activities.
 
 
 ## Citations
