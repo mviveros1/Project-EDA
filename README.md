@@ -3,6 +3,8 @@
 
 Eye Movement Data Set for Desktop Activities
 
+Please refer to the Rmd for the script.
+
 Introduction
 This repository contains a dataset of eye movement data for desktop activities, aimed at facilitating research and analysis in the field of eye-tracking studies. The dataset comprises 192 files, each capturing eye movement data during different desktop activities.
 
