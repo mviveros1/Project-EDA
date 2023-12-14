@@ -1,44 +1,41 @@
 ---
-title: "Final Project_Maribel Viveros"
+title: "Final Project-Maribel Viveros"
 output:
   html_document: default
   word_document: default
   pdf_document: default
 date: "2023-11-1"
 ---
+# Exploratory Eye Gaze Analysis
+
+## Introduction
+
+  Eye-based activity recognition has become a focal point in Human-Computer Interaction (HCI) and Ubiquitous Computing (UbiComp). Primarily centered on identifying reading behaviors and associated cognitive processes, this field leverages distinct eye movement patterns that vary across different activities and factors. In a study conducted by Srivastava and colleagues in 2018, the researchers aimed to identify sedentary activities marked by minimal physical movements by analyzing eye movements. The broader goal of their study was concerned with designing computing systems that can proactively monitor daily activities, providing assistance or encouragement towards a healthier lifestyle. Srivastava et al. (2018) expanded on prior research, emphasizing the potential of eye tracking as a promising method for activity recognition. Additionally, the researchers developed a classifier combining existing low-level gaze features with novel mid-level gaze features. When applied to the dataset that included 24 participants engaged in a range of desktop computing activities, the outcomes demonstrated an overall accuracy of activity recognition.
+
+  Prior studies have shown that first fixation duration can serve as a measure of visual information acquisition (Holmqvist, et al., 2018). First fixation, or initial gaze, is the amount of time an individual spends fixating their gaze on a specific area of interest during an eye-tracking experiment. Given that prior researchers have already identified eye movements that are operationalized into mid-level, low-level, and high-level categories suitable for classification, my study seeks to ascertain which features are most appropriate for this purpose.   
+
+  The proposed study explores the dataset from Srivastava et al. (2018) containing specific eye behaviors, including initial gaze, and time spent on activity, and examine if inital gaze and duration can be used for desktop activity recognition.  
+  
+  The current research project posits: Can the application of first fixation metrics (a common eye-tracking measure) contribute to desktop activity recognition? This isn’t very precise, but that’s okay: Part of the goal of this EDA project is to clarify eye-metrics that contribute to understanding of visual perception.
+  
 # Setup
 
 ```{r}
 suppressPackageStartupMessages({
   suppressWarnings(library(tidyverse))   # for working with the data
-  suppressWarnings(library(lubridate))   # for working with datetime data
   suppressWarnings(library(skimr))       # generate a text-based overview of the data
   suppressWarnings(library(visdat))      # generate plots visualizing data types and missingness
   suppressWarnings(library(plotly))      # generate interactive plots
   suppressWarnings(library(readxl))
-  suppressWarnings(library(ggplot2))     # needed for the plot of eye metrics
-  suppressWarnings(library(dplyr))
-  suppressWarnings(library(tibble))
+  library(downloader)
+  library(openxlsx)
+  library(viridis)
+  library(tinytex)
+  library(purrr)
+  library(dplyr)
 })
 ```
 
-
-# Exploratory Eye Gaze Analysis
-
-## Introduction
-
-
-By analyzing an existing gaze data set collected from 24 participants engaged in eight distinct desktop activities this research will contribute to our understanding of visual perception.This project aims to assess first fixation metrics for recognizing desktop activities. The first fixation, represents the immediate processing of the attended stimulus and serves as a measure of attention.
-
-The proposed research is specifically concerned with: Can the application of first fixation metrics (a common eye-tracking measure) contribute to desktop activity recognition? 
-
-The dataset is derived from Srivastava, N., Newn, J., and Velloso, E.'s (2018) study, where the goal was to identify sedentary activities with minimal physical movements using eye movements. This study aimed to extend previous research showcasing the potential of eye tracking as a promising method for activity recognition. The study highlighted the ongoing challenge in the research community to achieve finer-grained activity recognition across a wide range of desktop-based activities using more precise eye-measures. Srivstava and colleagues (2018) hoped their findings would support the “design of computing systems that can proactively monitor daily activities and can either assist users with their daily tasks or encourage them to follow a healthy lifestyle.” In contrast to previous work centered on using eye movements for traditional human activity recognition, their study was oriented toward devising a methodology for distinguishing desktop activities. They constructed a classifier that combined 26 low-level gaze features from existing literature with 24 novel mid-level gaze features. The researchers applied their approach to a dataset encompassing 24 participants engaged in eight desktop computing activities. The results supported the integration of the Srivastava and colleagues’ proposed mid-level gaze features, revealing enhanced overall performance in activity recognition. The data aimed to reveal the relationship and uncover the connection between eye movements and specific desktop-based activities. The values crystallized in the data is the recognition of human activities through eye movements. These values are related to desktop activity recognition and context-aware systems and consist of high, low and mid-level gaze features and timestamps in the dataset.  
-  This understanding of human activities is valuable in several domains, including surveillance, healthcare, and education. The data contributes to the development of context-aware interactive systems. By understanding the context of users' activities, systems can provide more personalized and helpful support. Ultimately, their study's objective is to simplify activity recognition by leveraging intuitive knowledge of eye movements and patterns.
-
-
-The current research inquiry revolves around the question, to what extent can the incorporation of first fixation metrics enhance the recognition of desktop activities? I aim to delve into the specific eye behaviors, initial gaze, to see how it supports activity recognition. Prior studies have shown that first fixation duration can serve as a measure of visual information acquisition (Holmqvist, et al., 2018). First fixation, or initial gaze, is the amount of time an individual spends fixating their gaze on a specific area of interest during an eye-tracking experiment. Given that prior researchers have already identified eye movements that are operationalized into mid-level, low-level, and high-level categories suitable for classification, my study seeks to ascertain which features are most appropriate for this purpose.
-
-This isn’t very precise, but that’s okay: Part of the goal of this EDA project is to clarify eye-metrics that contribute to understanding of visual perception.
 
 ```{r}
 file_path <- "C:/Users/mv014/OneDrive - State Center Community College Distrct/Desktop/desktop/2022 Requests/UCM/R training/UcmFALL 2023/R2023/Final Project/desktopactivities all.xlsx"
